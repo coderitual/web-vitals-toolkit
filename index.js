@@ -28,7 +28,7 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
     browserWSEndpoint: webSocketDebuggerUrl,
   });
 
-  // Set puppeter options
+  // Set puppeteer options
 
   // Run Lighthouse
   const { lhr } = await lighthouse(url, options, config);
@@ -53,8 +53,8 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
      Lighthouse metrics: 
      🎨 First Contentful Paint: ${first_contentful_paint}, 
      📱 Cumulative Layout Shift: ${cumulative_layout_shift},
-     🏞 Largest Contentful Paint: ${largest_contentful_paint},
-     ⏱ Max Potential FID: ${max_potential_fid},
+     🌄 Largest Contentful Paint: ${largest_contentful_paint},
+     ⏳ Max Potential FID: ${max_potential_fid},
      ⌛️ Total Blocking Time: ${total_blocking_time},
      👆 Time To Interactive: ${time_to_interactive}`);
 }
