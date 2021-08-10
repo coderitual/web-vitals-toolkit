@@ -38,7 +38,7 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
   const json = reportGenerator.generateReport(lhr, 'json');
 
   const audits = JSON.parse(json).audits; // Lighthouse audits
-  console.log(audits);
+
   const first_contentful_paint = audits['first-contentful-paint'].displayValue;
   const largest_contentful_paint =
     audits['largest-contentful-paint'].displayValue;
