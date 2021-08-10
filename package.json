@@ -8,6 +8,7 @@
   "dependencies": {
     "lighthouse": "^8.2.0",
     "puppeteer": "^10.2.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "yargs": "^17.1.0"
   }
 }

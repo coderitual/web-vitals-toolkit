@@ -1,6 +1,7 @@
 const fs = require('fs');
 const lighthouse = require('lighthouse');
 const puppeteer = require('puppeteer');
+const argv = require('yargs').argv;
 
 const chromeLauncher = require('chrome-launcher');
 const reportGenerator = require('lighthouse/report/report-generator');
@@ -28,7 +29,13 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
     browserWSEndpoint: webSocketDebuggerUrl,
   });
 
-  // Set puppeteer options
+  // Modify request in puppeteer when lh open url
+  browser.on('targetchanged', async (target) => {
+    const page = await target.page();
+    if (page && page.url() === url) {
+      await page.addStyleTag({ content: '* {color: red}' });
+    }
+  });
 
   // Run Lighthouse
   const { lhr } = await lighthouse(url, options, config);
