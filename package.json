@@ -1,0 +1,13 @@
+{
+  "name": "web-vitals-headless",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:coderitual/web-vitals-headless.git",
+  "author": "coderitual <skowronkow@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lighthouse": "^8.2.0",
+    "puppeteer": "^10.2.0",
+    "request": "^2.88.2"
+  }
+}
