@@ -1,2 +1,2 @@
 # web-vitals-headless
-Core web vitals headless measurement tools to find JS script causing issues
+Core web vitals headless measurement scripts to find JS script causing issues
