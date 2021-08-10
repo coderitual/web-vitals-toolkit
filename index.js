@@ -33,7 +33,14 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
   browser.on('targetchanged', async (target) => {
     const page = await target.page();
     if (page && page.url() === url) {
-      await page.addStyleTag({ content: '* {color: red}' });
+      await page.setRequestInterception(true);
+      page.on('request', (request) => {
+        if (request.resourceType() === 'script') {
+          request.abort();
+        } else {
+          request.continue();
+        }
+      });
     }
   });
 
