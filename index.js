@@ -29,13 +29,32 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
     browserWSEndpoint: webSocketDebuggerUrl,
   });
 
-  // Modify request in puppeteer when lh open url
+  // Disable js
+  // browser.on('targetchanged', async (target) => {
+  //   const page = await target.page();
+  //   if (page && page.url() === url) {
+  //     await page.setRequestInterception(true);
+  //     page.on('request', (request) => {
+  //       if (request.resourceType() === 'script') {
+  //         request.abort();
+  //       } else {
+  //         request.continue();
+  //       }
+  //     });
+  //   }
+  // });
+
+  // block third party scripts
   browser.on('targetchanged', async (target) => {
     const page = await target.page();
     if (page && page.url() === url) {
       await page.setRequestInterception(true);
       page.on('request', (request) => {
-        if (request.resourceType() === 'script') {
+        const url = request.url();
+        if (
+          !url.startsWith('https://brainly.com') &&
+          request.resourceType() === 'script'
+        ) {
           request.abort();
         } else {
           request.continue();
