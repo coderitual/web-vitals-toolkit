@@ -28,6 +28,8 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
     browserWSEndpoint: webSocketDebuggerUrl,
   });
 
+  // Set puppeter options
+
   // Run Lighthouse
   const { lhr } = await lighthouse(url, options, config);
   await browser.disconnect();
@@ -36,13 +38,23 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
   const json = reportGenerator.generateReport(lhr, 'json');
 
   const audits = JSON.parse(json).audits; // Lighthouse audits
+  console.log(audits);
   const first_contentful_paint = audits['first-contentful-paint'].displayValue;
+  const largest_contentful_paint =
+    audits['largest-contentful-paint'].displayValue;
+  const speed_index = audits['speed-index'].displayValue;
+  const max_potential_fid = audits['max-potential-fid'].displayValue;
+  const cumulative_layout_shift =
+    audits['cumulative-layout-shift'].displayValue;
   const total_blocking_time = audits['total-blocking-time'].displayValue;
   const time_to_interactive = audits['interactive'].displayValue;
 
   console.log(`\n
      Lighthouse metrics: 
      🎨 First Contentful Paint: ${first_contentful_paint}, 
+     📱 Cumulative Layout Shift: ${cumulative_layout_shift},
+     🏞 Largest Contentful Paint: ${largest_contentful_paint},
+     ⏱ Max Potential FID: ${max_potential_fid},
      ⌛️ Total Blocking Time: ${total_blocking_time},
      👆 Time To Interactive: ${time_to_interactive}`);
 }
