@@ -1,19 +1,34 @@
-const fs = require('fs');
 const lighthouse = require('lighthouse');
 const puppeteer = require('puppeteer');
 const argv = require('yargs').argv;
-
 const chromeLauncher = require('chrome-launcher');
 const reportGenerator = require('lighthouse/report/report-generator');
 const request = require('request');
 const util = require('util');
+const fs = require('fs');
 
 const options = {
-  logLevel: 'info',
-  output: 'json',
+  // logLevel: 'info',
+  output: 'html',
   onlyCategories: ['performance'],
   disableDeviceEmulation: true,
   chromeFlags: ['--disable-mobile-emulation'],
+  // blockedUrlPatterns: [
+  //   '*google*',
+  //   '*datadome*',
+  //   '*doubleclick*',
+  //   '*hotjar*',
+  //   '*datadome*',
+  //   '*survicate*',
+  //   '*facebook*',
+  //   '*quantcount*',
+  //   '*branch.io*',
+  //   '*connatix*',
+  //   '*aaxads*',
+  //   '*sentry*',
+  //   '*aaxdetect*',
+  //   '*app.link*',
+  // ],
 };
 
 async function lighthouseFromPuppeteer(url, options, config = null) {
@@ -45,31 +60,36 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
   //   }
   // });
 
-  // block third party scripts
-  // browser.on('targetchanged', async (target) => {
-  //   const page = await target.page();
-  //   if (page && page.url() === url) {
-  //     await page.setRequestInterception(true);
-  //     page.on('request', (request) => {
-  //       try {
-  //         const url = request.url();
-  //         const type = request.resourceType();
-  //         if (!url.startsWith('https://brainly.com') && type === 'script') {
-  //           console.log(`⛔️ Resource blocked: type: ${type}, url: ${url}`);
-  //           request.abort();
-  //         } else {
-  //           console.log(`✅ Resource passed: type: ${type}, url: ${url}`);
-  //           request.continue();
-  //         }
-  //       } catch (e) {}
-  //     });
-  //   }
-  // });
+  //block third party scripts
+  browser.on('targetchanged', async (target) => {
+    const page = await target.page();
+    if (page && page.url() === url) {
+      //await page.setRequestInterception(true);
+      page.on('request', (request) => {
+        try {
+          const url = request.url();
+          const type = request.resourceType();
+          console.log(`📦 Resource: type: ${type}, url: ${url}`);
+          // if (!url.startsWith('https://brainly.com') && type === 'script') {
+          //   console.log(`⛔️ Resource blocked: type: ${type}, url: ${url}`);
+          //   request.abort();
+          // } else {
+          //   console.log(`✅ Resource passed: type: ${type}, url: ${url}`);
+          //   request.continue();
+          // }
+        } catch (e) {}
+      });
+    }
+  });
 
   // Run Lighthouse
-  const { lhr } = await lighthouse(url, options, config);
+  const { lhr, report } = await lighthouse(url, options, config);
   await browser.disconnect();
   await chrome.kill();
+
+  // await fs.appendFile('report.html', report, function (err) {
+  //   if (err) throw err;
+  // });
 
   const json = reportGenerator.generateReport(lhr, 'json');
 
