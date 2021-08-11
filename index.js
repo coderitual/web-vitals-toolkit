@@ -11,6 +11,7 @@ const util = require('util');
 const options = {
   logLevel: 'info',
   output: 'json',
+  onlyCategories: ['performance'],
   disableDeviceEmulation: true,
   chromeFlags: ['--disable-mobile-emulation'],
 };
