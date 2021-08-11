@@ -45,23 +45,25 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
   // });
 
   // block third party scripts
-  browser.on('targetchanged', async (target) => {
-    const page = await target.page();
-    if (page && page.url() === url) {
-      await page.setRequestInterception(true);
-      page.on('request', (request) => {
-        const url = request.url();
-        if (
-          !url.startsWith('https://brainly.com') &&
-          request.resourceType() === 'script'
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
-    }
-  });
+  // browser.on('targetchanged', async (target) => {
+  //   const page = await target.page();
+  //   if (page && page.url() === url) {
+  //     await page.setRequestInterception(true);
+  //     page.on('request', (request) => {
+  //       try {
+  //         const url = request.url();
+  //         const type = request.resourceType();
+  //         if (!url.startsWith('https://brainly.com') && type === 'script') {
+  //           console.log(`⛔️ Resource blocked: type: ${type}, url: ${url}`);
+  //           request.abort();
+  //         } else {
+  //           console.log(`✅ Resource passed: type: ${type}, url: ${url}`);
+  //           request.continue();
+  //         }
+  //       } catch (e) {}
+  //     });
+  //   }
+  // });
 
   // Run Lighthouse
   const { lhr } = await lighthouse(url, options, config);
