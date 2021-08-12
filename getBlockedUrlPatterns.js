@@ -13,5 +13,7 @@ module.exports = function getBlockedUrlPatterns() {
     '*aaxdetect*',
     '*app.link*',
     '*google*',
+    '*brainly.com*',
+    '*',
   ];
 };
