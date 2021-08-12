@@ -39,6 +39,7 @@ const options = {
   chromeFlags: ['--disable-mobile-emulation'],
 };
 
+// Default mobile config
 const config = {
   extends: 'lighthouse:default',
   settings: {
@@ -107,6 +108,9 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
      ⌛️ Total Blocking Time: ${total_blocking_time},
      👆 Time To Interactive: ${time_to_interactive}`);
 
+  await browser.disconnect();
+  await chrome.kill();
+
   return {
     first_contentful_paint,
     cumulative_layout_shift,
@@ -115,18 +119,15 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
     total_blocking_time,
     time_to_interactive,
   };
-
-  await browser.disconnect();
-  await chrome.kill();
 }
 
 async function gatherResults(url, options, config) {
   const results = [];
-  //const patterns = ['', ...blockedUrlPatterns];
-  const patterns = [''];
+  const patterns = ['', ...blockedUrlPatterns];
   for (const pattern of patterns) {
     for (let i = 0; i < 1; i++) {
-      const result = await lighthouseFromPuppeteer(url, options, config);
+      const opts = { ...options, blockedUrlPatterns: [pattern] };
+      const result = await lighthouseFromPuppeteer(url, opts, config);
       results.push({
         url,
         pattern,
