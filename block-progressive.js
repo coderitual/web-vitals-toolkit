@@ -4,6 +4,7 @@ const lighthouseFromPuppeteer = require('./lib/lighthouseFromPuppeteer');
 const saveToCsv = require('./lib/saveToCsv');
 const getBlockedUrlPatterns = require('./getBlockedUrlPatterns');
 const getConfig = require('./getConfig');
+const getOptions = require('./getOptions');
 
 // CLI arguments
 const url = argv.url ?? 'https://brainly.com/question/1713545';
@@ -13,13 +14,7 @@ const filename =
 
 const blockedUrlPatterns = getBlockedUrlPatterns();
 const config = getConfig();
-
-const options = {
-  output: 'html',
-  onlyCategories: ['performance'],
-  disableDeviceEmulation: true,
-  chromeFlags: ['--disable-mobile-emulation'],
-};
+const options = getOptions();
 
 async function gatherResults(url, options, config) {
   const results = [];
