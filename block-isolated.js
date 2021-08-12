@@ -7,11 +7,13 @@ const getConfig = require('./getConfig');
 const getOptions = require('./getOptions');
 
 // CLI arguments
+const numberOfRuns = argv.numberOfRuns ?? 5;
 const url = argv.url ?? 'https://brainly.com/question/1713545';
 const filename =
   argv.filename ??
-  `results/isolated_${convertUrlToFilename(url)}-${Date.now()}.csv`;
-const numberOfRuns = argv.numberOfRuns ?? 5;
+  `results/isolated_n${numberOfRuns}_${convertUrlToFilename(
+    url,
+  )}-${Date.now()}.csv`;
 
 const blockedUrlPatterns = getBlockedUrlPatterns();
 const config = getConfig();
