@@ -71,7 +71,7 @@ async function gatherResults(url, options, config) {
 
 async function main() {
   const results = await gatherResults(url, options, config);
-  saveToCSV(filename, url, results);
+  saveToCsv(filename, url, results);
   process.exit(0);
 }
 
