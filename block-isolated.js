@@ -6,12 +6,14 @@ const reportGenerator = require('lighthouse/report/report-generator');
 const request = require('request');
 const util = require('util');
 const fs = require('fs');
+const path = require('path');
 const convertUrlToFilename = require('./convertUrlToFilename');
 
 // CLI arguments
 const url = argv.url ?? 'https://brainly.com/question/1713545';
 const filename =
-  argv.filename ?? `isolated_${convertUrlToFilename(url)}-${Date.now()}.csv`;
+  argv.filename ??
+  `results/isolated_${convertUrlToFilename(url)}-${Date.now()}.csv`;
 
 const blockedUrlPatterns = [
   '*datadome*',
@@ -54,6 +56,13 @@ const config = {
     }),
   },
 };
+
+// function creates directoy if it doesn't exist
+function ensureDir(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath);
+  }
+}
 
 async function lighthouseFromPuppeteer(url, options, config = null) {
   // Launch chrome using chrome-launcher
@@ -114,7 +123,7 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
 async function gatherResults(url, options, config) {
   const results = [];
   //const patterns = ['', ...blockedUrlPatterns];
-  const patterns = [' '];
+  const patterns = [''];
   for (const pattern of patterns) {
     for (let i = 0; i < 1; i++) {
       const result = await lighthouseFromPuppeteer(url, options, config);
@@ -128,7 +137,8 @@ async function gatherResults(url, options, config) {
   return results;
 }
 
-function saveToCSV(url, results) {
+function saveToCSV(filename, url, results) {
+  ensureDir(path.dirname(filename));
   fs.appendFileSync(
     filename,
     `url, blocked_pattern, first_contentful_paint, cumulative_layout_shift, largest_contentful_paint, max_potential_fid, total_blocking_time, time_to_interactive\n`,
@@ -151,7 +161,9 @@ function saveToCSV(url, results) {
 
     fs.appendFileSync(
       filename,
-      `${url}, ${pattern}, ${first_contentful_paint}, ${cumulative_layout_shift}, ${largest_contentful_paint}, ${max_potential_fid}, ${total_blocking_time}, ${time_to_interactive}\n`,
+      `${url}, ${
+        pattern || '<no-pattern>'
+      }, ${first_contentful_paint}, ${cumulative_layout_shift}, ${largest_contentful_paint}, ${max_potential_fid}, ${total_blocking_time}, ${time_to_interactive}\n`,
       function (err) {
         if (err) throw err;
       },
@@ -161,7 +173,7 @@ function saveToCSV(url, results) {
 
 async function main() {
   const results = await gatherResults(url, options, config);
-  saveToCSV(url, results);
+  saveToCSV(filename, url, results);
   process.exit(0);
 }
 
