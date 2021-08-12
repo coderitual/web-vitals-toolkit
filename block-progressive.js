@@ -11,6 +11,7 @@ const url = argv.url ?? 'https://brainly.com/question/1713545';
 const filename =
   argv.filename ??
   `results/progressive_${convertUrlToFilename(url)}-${Date.now()}.csv`;
+const numberOfRuns = argv.numberOfRuns ?? 5;
 
 const blockedUrlPatterns = getBlockedUrlPatterns();
 const config = getConfig();
@@ -23,7 +24,7 @@ async function gatherResults(url, options, config) {
   for (const pattern of patterns) {
     blockedPatterns.push(pattern);
     console.log(blockedPatterns);
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < numberOfRuns; i++) {
       const opts = {
         ...options,
         blockedUrlPatterns: blockedPatterns.filter(Boolean),
