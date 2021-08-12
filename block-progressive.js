@@ -2,12 +2,14 @@ const argv = require('yargs').argv;
 const convertUrlToFilename = require('./lib/convertUrlToFilename');
 const lighthouseFromPuppeteer = require('./lib/lighthouseFromPuppeteer');
 const saveToCsv = require('./lib/saveToCsv');
+const gatherScriptsFromUrl = require('./lib/gatherScriptsFromUrl');
 const getBlockedUrlPatterns = require('./getBlockedUrlPatterns');
 const getConfig = require('./getConfig');
 const getOptions = require('./getOptions');
 
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 5;
+const dynamicPatterns = argv.dynamicPatterns ?? false;
 const url = argv.url ?? 'https://brainly.com/question/1713545';
 const filename =
   argv.filename ??
@@ -19,7 +21,7 @@ const blockedUrlPatterns = getBlockedUrlPatterns();
 const config = getConfig();
 const options = getOptions();
 
-async function gatherResults(url, options, config) {
+async function gatherResults(url, blockedUrlPatterns, options, config) {
   const results = [];
   const patterns = ['', ...blockedUrlPatterns];
   const blockedPatterns = [];
@@ -47,7 +49,28 @@ async function gatherResults(url, options, config) {
 }
 
 async function main() {
-  const results = await gatherResults(url, options, config);
+  const urlObject = new URL(url);
+  const urlHostname = urlObject.hostname;
+  const patterns = dynamicPatterns
+    ? [
+        ...new Set(
+          (await gatherScriptsFromUrl(url, options, config))
+            .reverse()
+            .map((url) => {
+              const urlObject = new URL(url);
+              const hostname = urlObject.hostname;
+              return hostname;
+            })
+            .filter((hostname) => urlHostname !== hostname)
+            .map((hostname) => `*${hostname}*`),
+        ),
+        `*${urlHostname}*`,
+        '*',
+      ]
+    : blockedUrlPatterns;
+
+  console.log(patterns);
+  const results = await gatherResults(url, blockedUrlPatterns, options, config);
   saveToCsv(filename, url, results);
   process.exit(0);
 }

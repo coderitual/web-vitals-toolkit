@@ -4,14 +4,14 @@ module.exports = function getBlockedUrlPatterns() {
     '*doubleclick*',
     '*hotjar*',
     '*survicate*',
-    '*scorecardresearch*'
-    '*cloudflareinsights*'
-    '*tremorhub*'
-    '*2mdn*'
-    '*quantserve*'
-    '*adsrvr*'
-    '*truste*'
-    '*trustarc*'
+    '*scorecardresearch*',
+    '*cloudflareinsights*',
+    '*tremorhub*',
+    '*2mdn*',
+    '*quantserve*',
+    '*adsrvr*',
+    '*truste*',
+    '*trustarc*',
     '*facebook*',
     '*quantcount*',
     '*pubmatic*',
@@ -20,7 +20,7 @@ module.exports = function getBlockedUrlPatterns() {
     '*branch.io*',
     '*connatix*',
     '*aaxads*',
-    '*aaxdetect*'
+    '*aaxdetect*',
     '*sentry*',
     '*aaxdetect*',
     '*app.link*',
