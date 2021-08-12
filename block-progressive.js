@@ -9,7 +9,7 @@ const getConfig = require('./getConfig');
 const url = argv.url ?? 'https://brainly.com/question/1713545';
 const filename =
   argv.filename ??
-  `results/isolated_${convertUrlToFilename(url)}-${Date.now()}.csv`;
+  `results/progressive_${convertUrlToFilename(url)}-${Date.now()}.csv`;
 
 const blockedUrlPatterns = getBlockedUrlPatterns();
 const config = getConfig();
@@ -21,14 +21,17 @@ const options = {
   chromeFlags: ['--disable-mobile-emulation'],
 };
 
-async function gatherResults(url, options, config, blockedUrlPatterns) {
+async function gatherResults(url, options, config) {
   const results = [];
   const patterns = ['', ...blockedUrlPatterns];
+  const blockedPatterns = [];
   for (const pattern of patterns) {
+    blockedPatterns.push(pattern);
+    console.log(blockedPatterns);
     for (let i = 0; i < 1; i++) {
       const opts = {
         ...options,
-        blockedUrlPatterns: [pattern].filter(Boolean),
+        blockedUrlPatterns: blockedPatterns.filter(Boolean),
       };
       const result = await lighthouseFromPuppeteer(url, opts, config);
       results.push({
@@ -42,7 +45,7 @@ async function gatherResults(url, options, config, blockedUrlPatterns) {
 }
 
 async function main() {
-  const results = await gatherResults(url, options, config, blockedUrlPatterns);
+  const results = await gatherResults(url, options, config);
   saveToCsv(filename, url, results);
   process.exit(0);
 }
