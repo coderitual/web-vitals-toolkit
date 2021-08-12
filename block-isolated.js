@@ -67,7 +67,7 @@ async function main() {
     : blockedUrlPatterns;
 
   console.log(patterns);
-  const results = await gatherResults(url, blockedUrlPatterns, options, config);
+  const results = await gatherResults(url, patterns, options, config);
   saveToCsv(filename, url, results);
   process.exit(0);
 }
