@@ -6,32 +6,35 @@ const reportGenerator = require('lighthouse/report/report-generator');
 const request = require('request');
 const util = require('util');
 const fs = require('fs');
+const convertUrlToFilename = require('./convertUrlToFilename');
+
+const url = argv.url ?? 'https://brainly.com/question/1713545';
 
 const devices = puppeteer.devices;
 const nexus5 = devices['Nexus 5'];
 
+const blockedUrlPatterns = [
+  '*datadome*',
+  '*doubleclick*',
+  '*hotjar*',
+  '*datadome*',
+  '*survicate*',
+  '*facebook*',
+  '*quantcount*',
+  '*branch.io*',
+  '*connatix*',
+  '*aaxads*',
+  '*sentry*',
+  '*aaxdetect*',
+  '*app.link*',
+  '*google*',
+];
+
 const options = {
-  // logLevel: 'info',
   output: 'html',
   onlyCategories: ['performance'],
   disableDeviceEmulation: true,
   chromeFlags: ['--disable-mobile-emulation'],
-  // blockedUrlPatterns: [
-  //   '*datadome*',
-  //   '*doubleclick*',
-  //   '*hotjar*',
-  //   '*datadome*',
-  //   '*survicate*',
-  //   '*facebook*',
-  //   '*quantcount*',
-  //   '*branch.io*',
-  //   '*connatix*',
-  //   '*aaxads*',
-  //   '*sentry*',
-  //   '*aaxdetect*',
-  //   '*app.link*',
-  //   '*google*',
-  // ],
 };
 
 const config = {
@@ -66,64 +69,8 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
     browserWSEndpoint: webSocketDebuggerUrl,
   });
 
-  // Disable js
-  // browser.on('targetchanged', async (target) => {
-  //   const page = await target.page();
-  //   if (page && page.url() === url) {
-  //     await page.setRequestInterception(true);
-  //     page.on('request', (request) => {
-  //       if (request.resourceType() === 'script') {
-  //         request.abort();
-  //       } else {
-  //         request.continue();
-  //       }
-  //     });
-  //   }
-  // });
-
-  // //block third party scripts
-  // browser.on('targetchanged', async (target) => {
-  //   try {
-  //     const page = await target.page();
-  //     //Emulated Phone
-  //     console.log('🌈 Page', page);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  //   if (page && page.url() === url) {
-  //     //await page.setRequestInterception(true);
-  //     page.on('request', (request) => {
-  //       try {
-  //         const url = request.url();
-  //         const type = request.resourceType();
-  //         console.log(`📦 Resource: type: ${type}, url: ${url}`);
-  //         // if (!url.startsWith('https://brainly.com') && type === 'script') {
-  //         //   console.log(`⛔️ Resource blocked: type: ${type}, url: ${url}`);
-  //         //   request.abort();
-  //         // } else {
-  //         //   console.log(`✅ Resource passed: type: ${type}, url: ${url}`);
-  //         //   request.continue();
-  //         // }
-  //       } catch (e) {}
-  //     });
-  //   }
-  // });
-
-  // Wait for Lighthouse to open url, then inject our stylesheet.
-  // browser.on('targetchanged', async (target) => {
-  //   const page = await target.page();
-  //   page.emulate(nexus5);
-  //   if (page && page.url() === url) {
-  //     await page.addStyleTag({ content: '* {color: red}' });
-  //   }
-  // });
-
   // Run Lighthouse
   const { lhr, report } = await lighthouse(url, options, config);
-
-  // await fs.appendFile('report.html', report, function (err) {
-  //   if (err) throw err;
-  // });
 
   const json = reportGenerator.generateReport(lhr, 'json');
 
@@ -141,6 +88,7 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
 
   console.log(`\n
      Lighthouse metrics: 
+     URL: ${url},
      🎨 First Contentful Paint: ${first_contentful_paint}, 
      📱 Cumulative Layout Shift: ${cumulative_layout_shift},
      🌄 Largest Contentful Paint: ${largest_contentful_paint},
@@ -148,12 +96,61 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
      ⌛️ Total Blocking Time: ${total_blocking_time},
      👆 Time To Interactive: ${time_to_interactive}`);
 
+  return {
+    first_contentful_paint,
+    cumulative_layout_shift,
+    largest_contentful_paint,
+    max_potential_fid,
+    total_blocking_time,
+    time_to_interactive,
+  };
+
   await browser.disconnect();
   await chrome.kill();
 }
 
-lighthouseFromPuppeteer(
-  argv.url ?? 'https://brainly.com/question/1713545',
-  options,
-  config,
-);
+async function gatherResults(url, options, config) {
+  const results = [];
+  for (const blockedUrl of blockedUrlPatterns) {
+    for (let i = 0; i < 1; i++) {
+      const result = await lighthouseFromPuppeteer(url, options, config);
+      results.push({
+        url,
+      });
+    }
+  }
+  return results;
+}
+
+function saveToCSV(url, results) {
+  fs.appendFileSync(
+    `${convertUrlToFilename(url)}.csv`,
+    `url, first_contentful_paint, cumulative_layout_shift, largest_contentful_paint, max_potential_fid, total_blocking_time, time_to_interactive`,
+    function (err) {
+      if (err) throw err;
+    },
+  );
+
+  results.forEach(
+    ({
+      url,
+      first_contentful_paint,
+      cumulative_layout_shift,
+      largest_contentful_paint,
+      max_potential_fid,
+      total_blocking_time,
+      time_to_interactive,
+    }) => {
+      fs.appendFileSync(
+        `${convertUrlToFilename(url)}.csv`,
+        `url, first_contentful_paint, cumulative_layout_shift, largest_contentful_paint, max_potential_fid, total_blocking_time, time_to_interactive`,
+        function (err) {
+          if (err) throw err;
+        },
+      );
+    },
+  );
+}
+
+const results = gatherResults(url, options, config);
+saveToCSV(url, results);
