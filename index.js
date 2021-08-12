@@ -81,33 +81,31 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
   //   }
   // });
 
-  // //block third party scripts
-  // browser.on('targetchanged', async (target) => {
-  //   try {
-  //     const page = await target.page();
-  //     //Emulated Phone
-  //     console.log('🌈 Page', page);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  //   if (page && page.url() === url) {
-  //     //await page.setRequestInterception(true);
-  //     page.on('request', (request) => {
-  //       try {
-  //         const url = request.url();
-  //         const type = request.resourceType();
-  //         console.log(`📦 Resource: type: ${type}, url: ${url}`);
-  //         // if (!url.startsWith('https://brainly.com') && type === 'script') {
-  //         //   console.log(`⛔️ Resource blocked: type: ${type}, url: ${url}`);
-  //         //   request.abort();
-  //         // } else {
-  //         //   console.log(`✅ Resource passed: type: ${type}, url: ${url}`);
-  //         //   request.continue();
-  //         // }
-  //       } catch (e) {}
-  //     });
-  //   }
-  // });
+  //block third party scripts
+  browser.on('targetchanged', async (target) => {
+    const page = await target.page();
+    //Emulated Phone
+    console.log('🌈 Page', page);
+
+    if (page && page.url() === url) {
+      //await page.setRequestInterception(true);
+      page.on('request', (request) => {
+        try {
+          const url = request.url();
+          const type = request.resourceType();
+          type === 'script' &&
+            console.log(`📦 Resource: type: ${type}, url: ${url}`);
+          // if (!url.startsWith('https://brainly.com') && type === 'script') {
+          //   console.log(`⛔️ Resource blocked: type: ${type}, url: ${url}`);
+          //   request.abort();
+          // } else {
+          //   console.log(`✅ Resource passed: type: ${type}, url: ${url}`);
+          //   request.continue();
+          // }
+        } catch (e) {}
+      });
+    }
+  });
 
   // Wait for Lighthouse to open url, then inject our stylesheet.
   // browser.on('targetchanged', async (target) => {
