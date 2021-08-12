@@ -23,10 +23,14 @@ async function gatherResults(url, options, config) {
   const results = [];
   const patterns = ['', ...blockedUrlPatterns];
   const blockedPatterns = [];
+  const runs = patterns.length * numberOfRuns;
+  let run = 0;
   for (const pattern of patterns) {
     blockedPatterns.push(pattern);
     console.log(blockedPatterns);
     for (let i = 0; i < numberOfRuns; i++) {
+      run++;
+      console.log(`\n🏃‍♂️ Run progressive: ${run} / ${runs}`);
       const opts = {
         ...options,
         blockedUrlPatterns: blockedPatterns.filter(Boolean),

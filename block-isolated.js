@@ -22,8 +22,12 @@ const options = getOptions();
 async function gatherResults(url, options, config, blockedUrlPatterns) {
   const results = [];
   const patterns = ['', ...blockedUrlPatterns];
+  const runs = patterns.length * numberOfRuns;
+  let run = 0;
   for (const pattern of patterns) {
     for (let i = 0; i < numberOfRuns; i++) {
+      run++;
+      console.log(`\n🏃‍♂️ Run isolated: ${run} / ${runs}`);
       const opts = {
         ...options,
         blockedUrlPatterns: [pattern].filter(Boolean),
