@@ -8,10 +8,9 @@ const util = require('util');
 const fs = require('fs');
 const convertUrlToFilename = require('./convertUrlToFilename');
 
+// CLI arguments
 const url = argv.url ?? 'https://brainly.com/question/1713545';
-
-const devices = puppeteer.devices;
-const nexus5 = devices['Nexus 5'];
+const filename = argv.filename ?? `isolated_${convertUrlToFilename(url)}.csv`;
 
 const blockedUrlPatterns = [
   '*datadome*',
@@ -76,15 +75,17 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
 
   const audits = JSON.parse(json).audits; // Lighthouse audits
 
-  const first_contentful_paint = audits['first-contentful-paint'].displayValue;
+  const first_contentful_paint =
+    audits['first-contentful-paint'].numericValue.toFixed(2);
   const largest_contentful_paint =
-    audits['largest-contentful-paint'].displayValue;
-  const speed_index = audits['speed-index'].displayValue;
-  const max_potential_fid = audits['max-potential-fid'].displayValue;
+    audits['largest-contentful-paint'].numericValue.toFixed(2);
+  const speed_index = audits['speed-index'].numericValue.toFixed(2);
+  const max_potential_fid = audits['max-potential-fid'].numericValue.toFixed(2);
   const cumulative_layout_shift =
-    audits['cumulative-layout-shift'].displayValue;
-  const total_blocking_time = audits['total-blocking-time'].displayValue;
-  const time_to_interactive = audits['interactive'].displayValue;
+    audits['cumulative-layout-shift'].numericValue.toFixed(4);
+  const total_blocking_time =
+    audits['total-blocking-time'].numericValue.toFixed(2);
+  const time_to_interactive = audits['interactive'].numericValue.toFixed(2);
 
   console.log(`\n
      Lighthouse metrics: 
@@ -111,11 +112,15 @@ async function lighthouseFromPuppeteer(url, options, config = null) {
 
 async function gatherResults(url, options, config) {
   const results = [];
-  for (const blockedUrl of blockedUrlPatterns) {
+  //const patterns = ['', ...blockedUrlPatterns];
+  const patterns = [' '];
+  for (const pattern of patterns) {
     for (let i = 0; i < 1; i++) {
       const result = await lighthouseFromPuppeteer(url, options, config);
       results.push({
         url,
+        pattern,
+        ...result,
       });
     }
   }
@@ -124,33 +129,39 @@ async function gatherResults(url, options, config) {
 
 function saveToCSV(url, results) {
   fs.appendFileSync(
-    `${convertUrlToFilename(url)}.csv`,
-    `url, first_contentful_paint, cumulative_layout_shift, largest_contentful_paint, max_potential_fid, total_blocking_time, time_to_interactive`,
+    filename,
+    `url, blocked_pattern, first_contentful_paint, cumulative_layout_shift, largest_contentful_paint, max_potential_fid, total_blocking_time, time_to_interactive\n`,
     function (err) {
       if (err) throw err;
     },
   );
 
-  results.forEach(
-    ({
+  for (const result of results) {
+    const {
       url,
+      pattern,
       first_contentful_paint,
       cumulative_layout_shift,
       largest_contentful_paint,
       max_potential_fid,
       total_blocking_time,
       time_to_interactive,
-    }) => {
-      fs.appendFileSync(
-        `${convertUrlToFilename(url)}.csv`,
-        `url, first_contentful_paint, cumulative_layout_shift, largest_contentful_paint, max_potential_fid, total_blocking_time, time_to_interactive`,
-        function (err) {
-          if (err) throw err;
-        },
-      );
-    },
-  );
+    } = result;
+
+    fs.appendFileSync(
+      filename,
+      `${url}, ${pattern}, ${first_contentful_paint}, ${cumulative_layout_shift}, ${largest_contentful_paint}, ${max_potential_fid}, ${total_blocking_time}, ${time_to_interactive}\n`,
+      function (err) {
+        if (err) throw err;
+      },
+    );
+  }
 }
 
-const results = gatherResults(url, options, config);
-saveToCSV(url, results);
+async function main() {
+  const results = await gatherResults(url, options, config);
+  saveToCSV(url, results);
+  process.exit(0);
+}
+
+main();
