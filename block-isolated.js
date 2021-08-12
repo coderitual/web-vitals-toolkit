@@ -10,7 +10,8 @@ const convertUrlToFilename = require('./convertUrlToFilename');
 
 // CLI arguments
 const url = argv.url ?? 'https://brainly.com/question/1713545';
-const filename = argv.filename ?? `isolated_${convertUrlToFilename(url)}.csv`;
+const filename =
+  argv.filename ?? `isolated_${convertUrlToFilename(url)}-${Date.now()}.csv`;
 
 const blockedUrlPatterns = [
   '*datadome*',
