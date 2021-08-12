@@ -11,8 +11,12 @@ module.exports = function getBlockedUrlPatterns() {
     '*quantserve*'
     '*adsrvr*'
     '*truste*'
+    '*trustarc*'
     '*facebook*',
     '*quantcount*',
+    '*pubmatic*',
+    '*adlightning*',
+    '*spotxchange*',
     '*branch.io*',
     '*connatix*',
     '*aaxads*',
