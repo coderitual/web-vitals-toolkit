@@ -70,10 +70,10 @@ async function main() {
       ]
     : blockedUrlPatterns;
 
-  console.log(`\n🏃‍♂️ Gather results for ${url}`);
-  console.log(`\n🏃‍♂️ Gather blocked patterns: ${patterns.join(', ')}`);
-  console.log(`\n🏃‍♂️ Gather ${numberOfRuns} runs`);
-  console.log(`'n🏃‍♂️ Save results to ${filename}`);
+  console.log(`🏃‍♂️ Gather results for ${url}`);
+  console.log(`🏃‍♂️ Gather blocked patterns(${patterns.length}): ${patterns}`);
+  console.log(`🏃‍♂️ Gather ${numberOfRuns} runs`);
+  console.log(`🏃‍♂️ Save results to ${filename}`);
 
   const results = await gatherResults(url, blockedUrlPatterns, options, config);
   saveToCsv(filename, url, results);
