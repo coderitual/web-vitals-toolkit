@@ -49,26 +49,27 @@ async function main() {
   const urlObject = new URL(url);
   const urlHostname = urlObject.hostname;
 
-  const dynamicHostPatterns = [
-    ...new Set(
-      (await gatherScriptsFromUrl(url, options, config))
-        .reverse()
-        .map((url) => {
-          const urlObject = new URL(url);
-          const hostname = urlObject.hostname;
-          return hostname;
-        })
-        .filter((hostname) => urlHostname !== hostname)
-        .map((hostname) => `*${hostname}*`),
-    ),
-    `*${urlHostname}*`,
-    '*',
-  ];
+  const patterns = dynamicPatterns
+    ? [
+        ...new Set(
+          (await gatherScriptsFromUrl(url, options, config))
+            .reverse()
+            .map((url) => {
+              const urlObject = new URL(url);
+              const hostname = urlObject.hostname;
+              return hostname;
+            })
+            .filter((hostname) => urlHostname !== hostname)
+            .map((hostname) => `*${hostname}*`),
+        ),
+        `*${urlHostname}*`,
+        '*',
+      ]
+    : blockedUrlPatterns;
 
-  const patterns = dynamicPatterns ? dynamicHostPatterns : blockedUrlPatterns;
+  console.log('Patterns:', patterns);
 
-  console.log(patterns);
-  const results = await gatherResults(url, patterns, options, config);
+  const results = await gatherResults(url, blockedUrlPatterns, options, config);
   saveToCsv(filename, url, results);
   process.exit(0);
 }
