@@ -48,23 +48,24 @@ async function gatherResults(url, blockedUrlPatterns, options, config) {
 async function main() {
   const urlObject = new URL(url);
   const urlHostname = urlObject.hostname;
-  const patterns = dynamicPatterns
-    ? [
-        ...new Set(
-          (await gatherScriptsFromUrl(url, options, config))
-            .reverse()
-            .map((url) => {
-              const urlObject = new URL(url);
-              const hostname = urlObject.hostname;
-              return hostname;
-            })
-            .filter((hostname) => urlHostname !== hostname)
-            .map((hostname) => `*${hostname}*`),
-        ),
-        `*${urlHostname}*`,
-        '*',
-      ]
-    : blockedUrlPatterns;
+
+  const dynamicHostPatterns = [
+    ...new Set(
+      (await gatherScriptsFromUrl(url, options, config))
+        .reverse()
+        .map((url) => {
+          const urlObject = new URL(url);
+          const hostname = urlObject.hostname;
+          return hostname;
+        })
+        .filter((hostname) => urlHostname !== hostname)
+        .map((hostname) => `*${hostname}*`),
+    ),
+    `*${urlHostname}*`,
+    '*',
+  ];
+
+  const patterns = dynamicPatterns ? dynamicHostPatterns : blockedUrlPatterns;
 
   console.log(patterns);
   const results = await gatherResults(url, patterns, options, config);
