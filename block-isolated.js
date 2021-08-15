@@ -68,11 +68,11 @@ async function main() {
     : blockedUrlPatterns;
 
   console.log(`🏃‍♂️ Gather results for ${url}`);
-  console.log(`🏃‍♂️ Gather blocked patterns(${patterns.length}): ${patterns}`);
+  console.log(`🏃‍♂️ Gather blocked patterns(${patterns.length}):`, patterns);
   console.log(`🏃‍♂️ Gather ${numberOfRuns} runs`);
   console.log(`🏃‍♂️ Save results to ${filename}`);
 
-  const results = await gatherResults(url, blockedUrlPatterns, options, config);
+  const results = await gatherResults(url, patterns, options, config);
   saveToCsv(filename, url, results);
   process.exit(0);
 }

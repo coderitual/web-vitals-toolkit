@@ -51,7 +51,7 @@ async function gatherResults(url, blockedUrlPatterns, options, config) {
 async function main() {
   const urlObject = new URL(url);
   const urlHostname = urlObject.hostname;
-
+  console.log({ dynamicPatterns, url, urlHostname });
   const patterns = dynamicPatterns
     ? [
         ...new Set(
@@ -71,11 +71,11 @@ async function main() {
     : blockedUrlPatterns;
 
   console.log(`🏃‍♂️ Gather results for ${url}`);
-  console.log(`🏃‍♂️ Gather blocked patterns(${patterns.length}): ${patterns}`);
+  console.log(`🏃‍♂️ Gather blocked patterns(${patterns.length}):`, patterns);
   console.log(`🏃‍♂️ Gather ${numberOfRuns} runs`);
   console.log(`🏃‍♂️ Save results to ${filename}`);
 
-  const results = await gatherResults(url, blockedUrlPatterns, options, config);
+  const results = await gatherResults(url, patterns, options, config);
   saveToCsv(filename, url, results);
   process.exit(0);
 }
