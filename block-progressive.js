@@ -29,7 +29,7 @@ async function gatherResults(url, blockedUrlPatterns, options, config) {
   let run = 0;
   for (const pattern of patterns) {
     blockedPatterns.push(pattern);
-    console.log(blockedPatterns);
+    console.log('blocked patterns:', blockedPatterns);
     for (let i = 0; i < numberOfRuns; i++) {
       run++;
       console.log(`\n🏃‍♂️ Run progressive: ${run} / ${runs}`);

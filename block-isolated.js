@@ -30,6 +30,7 @@ async function gatherResults(url, blockedUrlPatterns, options, config) {
     for (let i = 0; i < numberOfRuns; i++) {
       run++;
       console.log(`\n🏃‍♂️ Run isolated: ${run} / ${runs}`);
+      console.log('blocked pattern:', pattern);
       const opts = {
         ...options,
         blockedUrlPatterns: [pattern].filter(Boolean),
