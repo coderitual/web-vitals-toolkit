@@ -11,11 +11,14 @@ const getOptions = require('./getOptions');
 const numberOfRuns = argv.numberOfRuns ?? 1;
 const urls = argv.urls ?? getUrlsToCompare();
 const device = argv.device;
+const date = new Date()
+  .toLocaleString()
+  .replaceAll('/', '-')
+  .replaceAll(':', '-')
+  .replaceAll(', ', '_');
 const filename =
   argv.filename ??
-  `results/compare_urls${
-    urls.length
-  }_n${numberOfRuns}_${device}-${Date.now()}.csv`;
+  `results/compare_urls${urls.length}_n${numberOfRuns}_${device}-${date}.csv`;
 
 const config = getConfig(device);
 const options = getOptions();
