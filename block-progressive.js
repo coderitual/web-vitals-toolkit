@@ -10,7 +10,8 @@ const getOptions = require('./getOptions');
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 5;
 const dynamicPatterns = argv.dynamicPatterns ?? false;
-const url = argv.url ?? 'https://brainly.com/question/1713545';
+const url =
+  argv.url ?? 'https://brainly.com/question/1713545?adsAmazonTam=true';
 const filename =
   argv.filename ??
   `results/progressive_n${numberOfRuns}_${convertUrlToFilename(
@@ -76,7 +77,7 @@ async function main() {
   console.log(`🏃‍♂️ Save results to ${filename}`);
 
   const results = await gatherResults(url, patterns, options, config);
-  saveToCsv(filename, url, results);
+  saveToCsv(filename, results);
   process.exit(0);
 }
 
