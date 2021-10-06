@@ -1,7 +1,15 @@
 module.exports = function getUrlsToCompare() {
   return [
     'https://brainly.com/',
-    'https://brainly.com/?no-questions=true',
-    'https://brainly.com/?no-json=true',
+    'https://brainly.pl/',
+    'https://brainly.lat/',
+    'https://brainly.in/',
+    'https://nosdevoirs.fr/',
+    'https://eodev.com/',
+    'https://brainly.com.br/',
+    'https://znanija.com/',
+    'https://brainly.ro/',
+    'https://brainly.ph/',
+    'https://brainly.co.id/',
   ];
 };
