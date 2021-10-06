@@ -6,16 +6,13 @@ const gatherScriptsFromUrl = require('./lib/gatherScriptsFromUrl');
 const getUrlsToCompare = require('./getUrlsToCompare');
 const getConfig = require('./getConfig');
 const getOptions = require('./getOptions');
+const getCurrentDate = require('./getCurrentDate');
 
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 1;
 const urls = argv.urls ?? getUrlsToCompare();
 const device = argv.device;
-const date = new Date()
-  .toLocaleString()
-  .replaceAll('/', '-')
-  .replaceAll(':', '-')
-  .replaceAll(', ', '_');
+const date = getCurrentDate();
 const filename =
   argv.filename ??
   `results/compare_urls${urls.length}_n${numberOfRuns}_${device}-${date}.csv`;

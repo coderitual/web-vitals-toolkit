@@ -6,17 +6,19 @@ const gatherScriptsFromUrl = require('./lib/gatherScriptsFromUrl');
 const getBlockedUrlPatterns = require('./getBlockedUrlPatterns');
 const getConfig = require('./getConfig');
 const getOptions = require('./getOptions');
+const getCurrentDate = require('./getCurrentDate');
 
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 5;
 const dynamicPatterns = argv.dynamicPatterns ?? false;
+const date = getCurrentDate();
 const url =
   argv.url ?? 'https://brainly.com/question/1713545?adsAmazonTam=true';
 const filename =
   argv.filename ??
   `results/progressive_n${numberOfRuns}_${convertUrlToFilename(
     url,
-  )}-${Date.now()}.csv`;
+  )}-${date}.csv`;
 
 const blockedUrlPatterns = getBlockedUrlPatterns();
 const config = getConfig();
