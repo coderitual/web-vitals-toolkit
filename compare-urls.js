@@ -11,7 +11,7 @@ const getCurrentDate = require('./getCurrentDate');
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 1;
 const urls = argv.urls ?? getUrlsToCompare();
-const device = argv.device;
+const device = argv.device || 'mobile';
 const date = getCurrentDate();
 const filename =
   argv.filename ??
