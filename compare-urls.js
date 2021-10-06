@@ -9,13 +9,15 @@ const getOptions = require('./getOptions');
 
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 1;
-const urls =
-  argv.urls ?? getUrlsToCompare();
+const urls = argv.urls ?? getUrlsToCompare();
+const device = argv.device;
 const filename =
   argv.filename ??
-  `results/compare_urls${urls.length}_n${numberOfRuns}-${Date.now()}.csv`;
+  `results/compare_urls${
+    urls.length
+  }_n${numberOfRuns}_${device}-${Date.now()}.csv`;
 
-const config = getConfig();
+const config = getConfig(device);
 const options = getOptions();
 
 async function gatherResults(urls, options, config) {
