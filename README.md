@@ -1,2 +1,2 @@
-# web-vitals-cli
-Core web vitals measurement scripts to find web resources causing CWV issues
+# web-vitals-labs
+Core web vitals cli scripts to find web resources causing CWV issues
