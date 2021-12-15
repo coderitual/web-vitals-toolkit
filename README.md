@@ -1,2 +1,2 @@
 # web-vitals-labs
-Core web vitals cli scripts to find web resources causing CWV issues
+Set of command line scripts to find Core Web Vitals issues.
