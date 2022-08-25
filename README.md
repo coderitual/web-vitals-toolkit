@@ -1,2 +1,2 @@
 # web-vitals-labs
-Set of command line scripts to find Core Web Vitals issues.
+CLI tool to find Core Web Vitals issues caused by javascript.
