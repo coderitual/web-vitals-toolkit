@@ -12,8 +12,7 @@ const getCurrentDate = require('./getCurrentDate');
 const numberOfRuns = argv.numberOfRuns ?? 5;
 const dynamicPatterns = argv.dynamicPatterns ?? false;
 const date = getCurrentDate();
-const url =
-  argv.url ?? 'https://brainly.com/question/1713545?adsAmazonTam=true';
+const url = argv.url ?? 'https://brainly.com/question/1713545';
 const filename =
   argv.filename ??
   `results/isolated_n${numberOfRuns}_${convertUrlToFilename(url)}-${date}.csv`;
