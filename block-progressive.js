@@ -11,8 +11,9 @@ const getCurrentDate = require('./getCurrentDate');
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 5;
 const dynamicPatterns = argv.dynamicPatterns ?? false;
+const authHeaders = argv.authHeaders;
 const date = getCurrentDate();
-const url = argv.url ?? 'https://brainly.com/question/1713545';
+const url = argv.url ?? 'https://brainly.com/question/10875995';
 const filename =
   argv.filename ??
   `results/progressive_n${numberOfRuns}_${convertUrlToFilename(
@@ -38,6 +39,9 @@ async function gatherResults(url, blockedUrlPatterns, options, config) {
       const opts = {
         ...options,
         blockedUrlPatterns: blockedPatterns.filter(Boolean),
+        extraHeaders: {
+          ...(authHeaders && { Authorization: authHeaders }),
+        },
       };
       const result = await lighthouseFromPuppeteer(url, opts, config);
       results.push({

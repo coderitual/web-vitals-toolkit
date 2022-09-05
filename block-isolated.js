@@ -11,8 +11,9 @@ const getCurrentDate = require('./getCurrentDate');
 // CLI arguments
 const numberOfRuns = argv.numberOfRuns ?? 5;
 const dynamicPatterns = argv.dynamicPatterns ?? false;
+const authHeaders = argv.authHeaders;
 const date = getCurrentDate();
-const url = argv.url ?? 'https://brainly.com/question/1713545';
+const url = argv.url ?? 'https://design.z-dn.net/question/21';
 const filename =
   argv.filename ??
   `results/isolated_n${numberOfRuns}_${convertUrlToFilename(url)}-${date}.csv`;
@@ -34,6 +35,9 @@ async function gatherResults(url, blockedUrlPatterns, options, config) {
       const opts = {
         ...options,
         blockedUrlPatterns: [pattern].filter(Boolean),
+        extraHeaders: {
+          ...(authHeaders && { Authorization: authHeaders }),
+        },
       };
       const result = await lighthouseFromPuppeteer(url, opts, config);
       results.push({
