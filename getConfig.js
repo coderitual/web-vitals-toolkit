@@ -7,7 +7,7 @@ const mobileConfig = {
     // lighthouse:default is mobile by default
     // Skip the h2 audit so it doesn't lie to us. See https://github.com/GoogleChrome/lighthouse/issues/6539
     skipAudits: ['uses-http2'],
-    emulatedUserAgent: true,
+    emulatedUserAgent: false, // this option might be used to control loading scripts which detecting lh/bots, e.g. cookie consents providers
   },
   audits: ['metrics/first-contentful-paint-3g'],
   categories: {
