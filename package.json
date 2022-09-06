@@ -6,7 +6,7 @@
   "author": "coderitual <skowronkow@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "lighthouse": "^8.2.0",
+    "lighthouse": "^9.5.0",
     "puppeteer": "^10.2.0",
     "request": "^2.88.2",
     "yargs": "^17.1.0"
