@@ -1,5 +1,6 @@
-// Default mobile config
+const constants = require('lighthouse/lighthouse-core/config/constants');
 
+// Default mobile config
 const PIXEL5_EMULATION_METRICS = {
   mobile: true,
   width: 393,
@@ -13,6 +14,7 @@ const mobileConfig = {
   settings: {
     maxWaitForFcp: 15 * 1000,
     maxWaitForLoad: 35 * 1000,
+    throttling: constants.throttling.desktopDense4G,
     // lighthouse:default is mobile by default
     // Skip the h2 audit so it doesn't lie to us. See https://github.com/GoogleChrome/lighthouse/issues/6539
     skipAudits: ['uses-http2'],
@@ -30,7 +32,6 @@ const mobileConfig = {
 };
 
 // Default desktop config
-const constants = require('lighthouse/lighthouse-core/config/constants');
 const desktopConfig = {
   extends: 'lighthouse:default',
   settings: {
