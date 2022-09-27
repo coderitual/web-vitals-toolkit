@@ -1,4 +1,4 @@
-# web-vitals-labs
+# web-vitals-toolkit
 
 CLI tool to find Core Web Vitals issues on the website caused by javascript.
 
